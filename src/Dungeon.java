@@ -7,7 +7,7 @@ private boolean vampireMoves;
     public Dungeon(int legnth, int height, int vampires, int moves, boolean vampiresMove) {
 
     }
-    
+
     public void run() {
 
     }
