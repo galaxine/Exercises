@@ -1,3 +1,4 @@
+import java.util.Scanner;
 
 /*Todo 1.Player has a coordinate
        2.Player has movement
@@ -11,6 +12,7 @@ public class Player {
     private boolean moves = true;
     private char at = '@';
     private boolean alive = true;
+    private Scanner scanner = new Scanner(System.in);
     //first as  a test without the lamp class.
     public Player () {
 
@@ -32,6 +34,14 @@ public class Player {
         return y;
     }
 
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
     /**
      *
      * @return the player character visual
@@ -47,4 +57,7 @@ public class Player {
     public boolean isAlive() {
         return alive;
     }
+
+
+
 }

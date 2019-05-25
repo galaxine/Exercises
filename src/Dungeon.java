@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
 /*Todo 1. create a test playground.
          2. make the player move around.
          3. test that the player can not move outside.
@@ -11,19 +14,97 @@
          10. test that the conditions for losing or winning the game is valid.
    */
 public class Dungeon {
-private int length;
-private int height;
-private int vampires;
-private int moves;
-private boolean vampireMoves;
-    //constructor taking the size of the dungeon, amount of vampires and their right to move or not
-    public Dungeon(int legnth, int height, int vampires, int moves, boolean vampiresMove) {
+    private  boolean vampireMove;
+    private int length;
+    private int height;
+    private int vampires;
+    private int moves;
+    private char[][] dungeon;
+    private Player player = new Player();
+    Scanner scanner = new Scanner(System.in);
+    //constructor for testing
+    public Dungeon(int length, int height) {
+        this.length = length;
+        this.height = height;
+        dungeon = new char[length][height];
+    }
 
+    //constructor taking the size of the dungeon, amount of vampires and their right to move or not
+    public Dungeon(int length, int height, int vampires, int moves, boolean vampiresMove) {
+        this.length = length;
+        this.height = height;
+        this.vampires = vampires;
+        this.vampireMove = vampiresMove;
+        dungeon = new char[length][height];
     }
     //runs the game.
     public void run() {
 
     }
+    private void buildDungeon() {
+        // first create the dungeon in a double array char
+        for (int i = 0; i < height - 1; i++) {
+            for (int j = 0; j < length - 1; j++) {
+                dungeon[i][j] = '.';
+            }
+        }
+        //we need to make sure the index is not out of bounds.
+        if(!(player.getX() > (length-1) && player.getX() < 0 && player.getY() < 0 && player.getY() > (height -1))) {
+            dungeon[player.getX()][player.getY()] = player.getAt();
+        }
 
+    }
 
+    public void printDungeon() {
+        buildDungeon();
+        // second: print the dungeon
+        for (int i = 0; i < height - 1; i++) {
+            for (int j = 0; j < length - 1; j++) {
+                System.out.print(dungeon[i][j]);
+            }
+            System.out.println();
+        }
+    }
+
+    public ArrayList<Character> takeCommand(String command){
+        ArrayList<Character> commands  = new ArrayList<Character>();
+        for (int i = 0; i < command.length(); i++) {
+            if (command.charAt(i) != 'w' && command.charAt(i) != 'a' &&
+            command.charAt(i) != 's' && command.charAt(i) != 'd') {
+            }else {
+                commands.add(command.charAt(i));
+            }
+        } return commands;
+    }
+    // this method has a crux I didn't find until now:
+    //
+    public void executeCommands(ArrayList<Character> commands) {
+        if (!commands.isEmpty()) {
+            for (char command :
+                    commands) {
+                switch (command) {
+                    case 'a':
+                        if (player.getY() != 0) {
+                            player.setY(player.getY() - 1);
+                        }
+                        break;
+                    case 'd':
+                        if (player.getY() != (length - 1)) {
+                            player.setY(player.getY() + 1);
+                        }
+                        break;
+                    case 's':
+                        if (player.getX() != (height - 1)) {
+                            player.setX(player.getX() + 1);
+                        }
+                        break;
+                    case 'w':
+                        if (player.getX() != 0) {
+                            player.setX(player.getY() - 1);
+                        }
+                        break;
+                }
+            }
+        }
+    }
 }
