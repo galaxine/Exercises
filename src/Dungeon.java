@@ -34,6 +34,7 @@ public class Dungeon {
         this.length = length;
         this.height = height;
         this.vampires = vampires;
+        this.moves = moves;
         this.vampireMove = vampiresMove;
         dungeon = new char[length][height];
     }
@@ -43,23 +44,19 @@ public class Dungeon {
     }
     private void buildDungeon() {
         // first create the dungeon in a double array char
-        for (int i = 0; i < height - 1; i++) {
-            for (int j = 0; j < length - 1; j++) {
+        for (int i = 0; i < (height - 1); i++) {
+            for (int j = 0; j < (length - 1); j++) {
                 dungeon[i][j] = '.';
             }
         }
-        //we need to make sure the index is not out of bounds.
-        if(!(player.getX() > (length-1) && player.getX() < 0 && player.getY() < 0 && player.getY() > (height -1))) {
             dungeon[player.getX()][player.getY()] = player.getAt();
-        }
-
     }
 
     public void printDungeon() {
         buildDungeon();
         // second: print the dungeon
-        for (int i = 0; i < height - 1; i++) {
-            for (int j = 0; j < length - 1; j++) {
+        for (int i = 0; i < (height-1); i++) {
+            for (int j = 0; j < (length-1); j++) {
                 System.out.print(dungeon[i][j]);
             }
             System.out.println();
@@ -71,35 +68,38 @@ public class Dungeon {
         for (int i = 0; i < command.length(); i++) {
             if (command.charAt(i) != 'w' && command.charAt(i) != 'a' &&
             command.charAt(i) != 's' && command.charAt(i) != 'd') {
-            }else {
+            } else {
                 commands.add(command.charAt(i));
             }
         } return commands;
     }
-    // this method has a crux I didn't find until now:
-    //
+
+    /**
+     *
+     * @param commands
+     */
     public void executeCommands(ArrayList<Character> commands) {
         if (!commands.isEmpty()) {
             for (char command :
                     commands) {
                 switch (command) {
                     case 'a':
-                        if (player.getY() != 0) {
+                        if (player.getY() > 0) {
                             player.setY(player.getY() - 1);
                         }
                         break;
                     case 'd':
-                        if (player.getY() != (length - 1)) {
+                        if (player.getY() < (height - 1)) {
                             player.setY(player.getY() + 1);
                         }
                         break;
                     case 's':
-                        if (player.getX() != (height - 1)) {
+                        if (player.getX() < (length - 1)) {
                             player.setX(player.getX() + 1);
                         }
                         break;
                     case 'w':
-                        if (player.getX() != 0) {
+                        if (player.getX() > 0) {
                             player.setX(player.getY() - 1);
                         }
                         break;
@@ -107,4 +107,13 @@ public class Dungeon {
             }
         }
     }
+//redundant on second thought.
+    public void playerWallLogic(int x, int y) {
+
+    }
+        /*
+           1. if the player position is higher than the length and height, then let the player take the height and length as the position.
+           2. if the player is lower than (0, 0) than just take that as the coordinate.
+           3. else take the coordinates.
+         */
 }
