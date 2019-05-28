@@ -2,14 +2,18 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Dungeon dungeon = new Dungeon(6,7);
+        Dungeon dungeon = new Dungeon(4,4,16,300,false);
         //test loop;
-/*        while(true) {
+        String test0 = "wwwwwwwwwwwwww";
+        String test1 = "ddddddddddddddd";
+        String test2 = "aaaaaaaaaaaaaa";
+        String test3 = "ssssssssssssss";
+        while(true) {
             dungeon.printDungeon();
             System.out.println("giving command");
             dungeon.executeCommands(dungeon.takeCommand(new Scanner(System.in).nextLine()));
 
        }
- */
+
     }
 }
