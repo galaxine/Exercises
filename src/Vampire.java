@@ -49,18 +49,27 @@ public class Vampire {
         return vampire;
     }
 
+    // i use this to differentiate. if the vampire object is the same as with the
+    // other objects in the ArrayList in Dungeon, then we can make a new one that
+    // is individualistic in coordinates.
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null) {
+            return false;
+        }
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+        Vampire compare = (Vampire) o;
 
-        Vampire vampire = (Vampire) o;
-
-        if (x != vampire.x) return false;
-        return y == vampire.y;
-
+        if(this.getY() != ((Vampire) o).getY() && this.getX() != getX() ) {
+            return false;
+        }
+        return true;
     }
 
+    //i am not so sure if this is needed right now.
     @Override
     public int hashCode() {
         int result = x;

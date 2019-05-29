@@ -56,7 +56,6 @@ public class Dungeon {
             dungeon[player.getX()][player.getY()] = player.getAt();
 
                 createVampireHorde();
-                setVampireCoordination();
                 theHordeRepresents();
         //    randomVampireMovement();
             }
@@ -153,35 +152,85 @@ public class Dungeon {
                 break;
         }
     } */
-    //first create the horde, amount determined by the vampires parameter.
+    /**
+     * creates the Vampirehorde as decided by the parameter vampires.
+     * If the amount of vampires is greateer than the amount of tiles, then it says so.
+     * If the amount is lower, we loop by the amount of the vampire parameter:
+     * 1.create a new Vampire.
+     * 2.assign two random coordinates to the x and y values for the vampire.
+     * 3.check if the coordinates are not the same as the player and not the same as the other Vampire's Coordinates
+     *      add the Vampire to the vampireHorde after setting the alive parameter for the vampire to true
+     *      (I think that parameter is redundant).
+     * if not, decrement and try again.
+     */
     public void createVampireHorde() {
-        for (int i = 0; i < vampires; i++) {
-            Vampire vampire = new Vampire();
-            vampire.setAlive(true);
-            this.vampireHorde.add(vampire);
+        if(vampires >= length * height) {
+            System.out.println("there are more vampires than there is available space.");
+        } else {
+            for (int i = 0; i < vampires; i++) {
+
+                Vampire vampire = new Vampire();
+                int x = new Random().nextInt(height);
+                int y = new Random().nextInt(length);
+                vampire.setX(x);
+                vampire.setY(y);
+                if(notSameCoordinatesAsPlayer(x,y) && eachIsOne(vampire) ){
+
+                    vampire.setAlive(true);
+                    vampireHorde.add(vampire);
+                    dungeon[vampireHorde.get(i).getX()][vampireHorde.get(i).getY()] = vampire.getVampire();
+                } else {
+                    i--;
+                }
+
+            }
         }
     }
-    //distribute the vampires on the map.
-    public void setVampireCoordination() {
-        for (int i = 0; i < vampireHorde.size(); i++) {
-            int x = new Random().nextInt(length);
-            int y = new Random().nextInt(height);
-            //if the char dungeon coordinate is free and not vacated by a player or another Vampire, set it down.
-            //TODO Problem setting individual coordinates, should have looped instead.
-            if(dungeon [x][y] == '.' && !(dungeon[x][y] == '@' && dungeon[x][y]== 'V')) {
-                vampireHorde.get(i).setX(x);
-                vampireHorde.get(i).setY(y);
+
+    // mke sure that each vampire has an individual coordinate.
+    public boolean eachIsOne(Vampire vamp){
+        int copy = 0;
+        // fi the size of the horde is zero, then there is yet to be a duplicate
+        if(vampireHorde.size() ==0) {
+            return true;
+        }else {
+            // if the size is greater than 0, we can test for duplicate locations.
+            // i think it is a bit like bubble sort.
+            for (Vampire vampire : vampireHorde
+            ) {
+                //if one vamp has the same location, it might be the same vampire we checked with.
+                //we increment
+                if (vampire.getX() == vamp.getX()) {
+                    if (vampire.getY() == vamp.getY()) {
+                        return false;
+                    }
+                }
+
             }
-            else {
-                i--;
-            }
+            // else, each vampire was once an individual, full of life, before they became victim
+            // to the undying thirst.
+            return true;
         }
     }
+
     public void theHordeRepresents() {
         for (Vampire vampir :
                 vampireHorde) {
             dungeon[vampir.getX()][vampir.getY()] = vampir.getVampire();
         }
     }
-
+    public boolean notSameCoordinatesAsPlayer(int x, int y) {
+        // see if the vampire sits on the same x coordinate
+        if(x == player.getX()) {
+            // see if the vampire sits on the same y coordinate
+            if(y == player.getY()) {
+                //return false, because the vampire sits on the same coordinates as the player.
+                return false;
+            }
+        }
+        //return true because the vampire has not the same coordinates
+        return true;
+    }
 }
+
+

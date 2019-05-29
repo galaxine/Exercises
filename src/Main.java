@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Dungeon dungeon = new Dungeon(4,4,16,300,false);
+        Dungeon dungeon = new Dungeon(9,4,15,300,false);
         //test loop;
         String test0 = "wwwwwwwwwwwwww";
         String test1 = "ddddddddddddddd";
