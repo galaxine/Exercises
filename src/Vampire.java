@@ -1,8 +1,6 @@
-/*Todo 1. Vampires have a random location
-       2. Vampires have a look
-       3. Vampires are move locked
-       4. Vampires die
- */
+
+/*Todo the collections for taking out the dead vampires doesn't work.
+*  I assume this is a problem with the equals and hashcode implementation*/
 
 
 public class Vampire {
@@ -63,9 +61,12 @@ public class Vampire {
         }
         Vampire compare = (Vampire) o;
 
-        if(this.getY() != ((Vampire) o).getY() && this.getX() != getX() ) {
-            return false;
+        if(this.getY() != ((Vampire) o).getY() ){
+            if(this.getX() != getX()) {
+                return false;
+            }
         }
+
         return true;
     }
 
@@ -75,5 +76,9 @@ public class Vampire {
         int result = x;
         result = 31 * result + y;
         return result;
+    }
+
+    public String toString() {
+        return getVampire() + " " +  getX() + " " + getY();
     }
 }

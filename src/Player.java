@@ -58,6 +58,14 @@ public class Player {
         return alive;
     }
 
+    public void playerDies(int moves) {
+        if (moves == 0) {
+            this.alive = false;
+        }
+    }
 
-
+    public String toString() {
+        return getAt() + " " + getX()
+ + " " + getY();
+    }
 }

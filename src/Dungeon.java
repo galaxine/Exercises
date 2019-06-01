@@ -5,8 +5,8 @@ import java.util.Scanner;
 /*Todo 1. create a test playground. DONE
          2. make the player move around. DONE
          3. test that the player can not move outside. DONE
-         4. test that the vampires can move freely inside the dungeon randomly.
-         5. test that the vampires do not collide with each other.
+         4. test that the vampires can move freely inside the dungeon randomly DONE ?
+         5. test that the vampires do not collide with each other DONE?
          6. test that the vampires can be removed if the player collides with them.
          7. test that turn based movement works. Vampires move one turn
           after the player moves one turn.
@@ -44,6 +44,22 @@ public class Dungeon {
     }
     //runs the game.
     public void run() {
+        //those are done ONCE
+        buildDungeon();
+        createVampireHorde();
+        while (true) {
+            status();
+            theHordeRepresents();
+            printDungeon();
+            //take an order, execute it
+            executeCommands( takeCommand(scanner.nextLine()));
+
+            //see if the vampire was in his or her path
+            thisKillsTheVampire();
+            //see if they can be removed
+            removeVampires(vampireHorde);
+            buildDungeon();
+        }
 
     }
     private void buildDungeon() {
@@ -55,13 +71,9 @@ public class Dungeon {
         }
             dungeon[player.getX()][player.getY()] = player.getAt();
 
-                createVampireHorde();
-                theHordeRepresents();
-        //    randomVampireMovement();
             }
 
     public void printDungeon() {
-        buildDungeon();
         // second: print the dungeon
         for (int i = 0; i < (height); i++) {
             for (int j = 0; j < (length); j++) {
@@ -117,41 +129,63 @@ public class Dungeon {
                             player.setX(player.getX() - 1);
                         }
                         break;
-                }moves--;
+                }
+
+                //the player can move as many steps as it wants per move.
             }
+            //sets vampire's alive boolean to zero.
+            thisKillsTheVampire();
+            moves--;
         }
     }
     //first test if the Vampire can take random Coordinates
     //then test if it can move freely, randomly, inside the
 
 
-   /** public void randomVampireMovement() {
-        int x = new Random().nextInt(3);
-        switch (x) {
-            case 0:
-                if (!(vamp.getY()-1 < 0)) {
-                    vamp.setY(vamp.getY() - 1);
-                }
+    public void randomVampireMovement() {
+        for (Vampire vamp: vampireHorde
+             ) {
+
+            int x = new Random().nextInt(3);
+            switch (x) {
+                case 0:
+                    //1. it wants to go up, but there is a wall.
+                    //2. it wants to go up, but there is a wampire.
+                    if (!(vamp.getY() - 1 < 0)){
+                        if(dungeon[vamp.getX()][vamp.getY()-1] != 'V') {
+                            vamp.setY(vamp.getY() - 1);
+                        }
+                    }
                 break;
-            case 1:
-                //player may not be greater than length position
-                if (vamp.getY()+ 1 < (length)) {
-                    vamp.setY(vamp.getY() + 1);
-                }
-                break;
-            case 2:
-                if (vamp.getX() +1 < (height)) {
-                    vamp.setX(vamp.getX() + 1);
-                }
-                break;
-            //at least the player shall not be under zero
-            case 3:
-                if (!(vamp.getX()-1 <  0)) {
-                    vamp.setX(vamp.getX() - 1);
-                }
-                break;
+                case 1:
+                    //player may not be greater than length position
+                    if (vamp.getY() + 1 < (length)) {
+                        if (dungeon[vamp.getX()][vamp.getY() + 1] != 'V') {
+                            vamp.setY(vamp.getY() + 1);
+                        }
+                    }
+                    break;
+                case 2:
+                    if (vamp.getX() + 1 < (height)) {
+                        if(dungeon[vamp.getX()+1][vamp.getY()] != 'V') {
+                            vamp.setX(vamp.getX() + 1);
+                        }
+                    }
+                    break;
+                //at least the player shall not be under zero
+                case 3:
+                    if (!(vamp.getX() - 1 < 0)) {
+                        if(dungeon[vamp.getX()-1][vamp.getY()] != 'V') {
+                            vamp.setX(vamp.getX() - 1);
+                        }
+
+                    }
+                    break;
+            }
         }
-    } */
+    }
+
+
     /**
      * creates the Vampirehorde as decided by the parameter vampires.
      * If the amount of vampires is greateer than the amount of tiles, then it says so.
@@ -175,7 +209,6 @@ public class Dungeon {
                 vampire.setX(x);
                 vampire.setY(y);
                 if(notSameCoordinatesAsPlayer(x,y) && eachIsOne(vampire) ){
-
                     vampire.setAlive(true);
                     vampireHorde.add(vampire);
                     dungeon[vampireHorde.get(i).getX()][vampireHorde.get(i).getY()] = vampire.getVampire();
@@ -230,6 +263,40 @@ public class Dungeon {
         }
         //return true because the vampire has not the same coordinates
         return true;
+    }
+    //method displays the current entitities' stats
+    public void status() {
+        System.out.println(moves + "\n");
+        System.out.println();
+        System.out.println(player.toString());
+        for (Vampire vampir :
+                vampireHorde) {
+            System.out.println(vampir.toString());
+        }
+        System.out.println();
+
+    }
+    //This method takes out every dead vampire from the horde....
+    // it seems not to do so yet.
+    public void removeVampires(ArrayList<Vampire> vampireHorde) {
+        ArrayList<Vampire> toBeCulled = new ArrayList<Vampire>();
+        for (Vampire vampir :
+                vampireHorde) {
+            if(!vampir.isAlive()) {
+                toBeCulled.add(vampir);
+            }
+        } vampireHorde.removeAll(toBeCulled);
+    }
+
+    //every vampire's boolean for alive is set to false, if the coordinate of the vampire
+    // aligns with the player's
+    public void thisKillsTheVampire() {
+        for (Vampire vampir :
+                vampireHorde) {
+            if(player.getX() == vampir.getX() && player.getY() ==vampir.getY()) {
+                vampir.setAlive(false);
+            }
+        }
     }
 }
 
