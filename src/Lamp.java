@@ -17,4 +17,13 @@ public class Lamp {
             return false;
         } return false;
     }
+
+    public void lampTimer() {
+        this.timer--;
+    }
+
+    public int getTimer() {
+        return timer;
+    }
+
 }

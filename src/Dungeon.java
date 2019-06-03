@@ -6,9 +6,9 @@ import java.util.Scanner;
          2. make the player move around. DONE
          3. test that the player can not move outside. DONE
          4. test that the vampires can move freely inside the dungeon randomly DONE ?
-         5. test that the vampires do not collide with each other DONE?
-         6. test that the vampires can be removed if the player collides with them.
-         7. test that turn based movement works. Vampires move one turn
+         5. test that the vampires do not collide with each other Done
+         6. test that the vampires can be removed if the player collides with them. DONE
+         7. test that turn based movement works. Vampires move one step for each player step.
           after the player moves one turn.
          8. test that the lamp works.
          9. test that the terminal gui looks as intended.
@@ -16,12 +16,14 @@ import java.util.Scanner;
    */
 public class Dungeon {
     private  boolean vampireMove;
+    ArrayList<Integer> number = new ArrayList<Integer>();
     private int length;
     private int height;
     private int vampires;
-    private int moves;
+    private int moves=0;
     private char[][] dungeon;
     private Player player = new Player();
+    private Lamp lamp;
     private ArrayList<Vampire> vampireHorde;
     Scanner scanner = new Scanner(System.in);
 
@@ -37,7 +39,7 @@ public class Dungeon {
         this.length = length;
         this.height = height;
         this.vampires = vampires;
-        this.moves = moves;
+        this.lamp = new Lamp(moves);
         this.vampireMove = vampiresMove;
         dungeon = new char[height][length];
         vampireHorde = new ArrayList<Vampire>();
@@ -52,12 +54,12 @@ public class Dungeon {
             theHordeRepresents();
             printDungeon();
             //take an order, execute it
-            executeCommands( takeCommand(scanner.nextLine()));
-
+            executeCommands(takeCommand(scanner.nextLine()));
             //see if the vampire was in his or her path
             thisKillsTheVampire();
             //see if they can be removed
             removeVampires(vampireHorde);
+            randomVampireMovement();
             buildDungeon();
         }
 
@@ -102,7 +104,7 @@ public class Dungeon {
         if (!commands.isEmpty()) {
             for (char command :
                     commands) {
-                if (moves == 0) {
+                if (commands.size() == 0) {
                     break;
                 }
                 switch (command) {
@@ -130,12 +132,11 @@ public class Dungeon {
                         }
                         break;
                 }
-
-                //the player can move as many steps as it wants per move.
+                //the lamp timer lowers
+                lamp.lampTimer();
+                //the movement rises
+                moves++;
             }
-            //sets vampire's alive boolean to zero.
-            thisKillsTheVampire();
-            moves--;
         }
     }
     //first test if the Vampire can take random Coordinates
@@ -143,45 +144,51 @@ public class Dungeon {
 
 
     public void randomVampireMovement() {
-        for (Vampire vamp: vampireHorde
-             ) {
+        //while move is greater than 0
+        while (moves >0) {
+            //move each vampire once
+            for (Vampire vamp : vampireHorde
+            ) {
+                int x = new Random().nextInt(4);
+                number.add(x);
+                switch (x) {
+                    case 0:
+                        //1. it wants to go up, but there is a wall.
+                        //2. it wants to go up, but there is a wampire.
+                        if (!(vamp.getY() - 1 < 0)) {
+                            if (dungeon[vamp.getX()][vamp.getY() - 1] != 'V') {
+                                vamp.setY(vamp.getY() - 1);
+                            }
+                        }
+                        break;
+                    case 1:
+                        //player may not be greater than length position
+                        if (vamp.getY() + 1 < (length)) {
+                            if (dungeon[vamp.getX()][vamp.getY() + 1] != 'V') {
+                                vamp.setY(vamp.getY() + 1);
+                            }
+                        }
+                        break;
+                    case 2:
+                        if (vamp.getX() + 1 < (height)) {
+                            if (dungeon[vamp.getX() + 1][vamp.getY()] != 'V') {
+                                vamp.setX(vamp.getX() + 1);
+                            }
+                        }
+                        break;
+                    //at least the player shall not be under zero
+                    case 3:
+                        if (!(vamp.getX() - 1 < 0)) {
+                            if (dungeon[vamp.getX() - 1][vamp.getY()] != 'V') {
+                                vamp.setX(vamp.getX() - 1);
+                            }
 
-            int x = new Random().nextInt(3);
-            switch (x) {
-                case 0:
-                    //1. it wants to go up, but there is a wall.
-                    //2. it wants to go up, but there is a wampire.
-                    if (!(vamp.getY() - 1 < 0)){
-                        if(dungeon[vamp.getX()][vamp.getY()-1] != 'V') {
-                            vamp.setY(vamp.getY() - 1);
                         }
-                    }
-                break;
-                case 1:
-                    //player may not be greater than length position
-                    if (vamp.getY() + 1 < (length)) {
-                        if (dungeon[vamp.getX()][vamp.getY() + 1] != 'V') {
-                            vamp.setY(vamp.getY() + 1);
-                        }
-                    }
-                    break;
-                case 2:
-                    if (vamp.getX() + 1 < (height)) {
-                        if(dungeon[vamp.getX()+1][vamp.getY()] != 'V') {
-                            vamp.setX(vamp.getX() + 1);
-                        }
-                    }
-                    break;
-                //at least the player shall not be under zero
-                case 3:
-                    if (!(vamp.getX() - 1 < 0)) {
-                        if(dungeon[vamp.getX()-1][vamp.getY()] != 'V') {
-                            vamp.setX(vamp.getX() - 1);
-                        }
-
-                    }
-                    break;
+                        break;
+                }
             }
+            //reduce the move parameter by one
+            moves--;
         }
     }
 
@@ -224,7 +231,7 @@ public class Dungeon {
     public boolean eachIsOne(Vampire vamp){
         int copy = 0;
         // fi the size of the horde is zero, then there is yet to be a duplicate
-        if(vampireHorde.size() ==0) {
+        if(vampireHorde.size() == 0) {
             return true;
         }else {
             // if the size is greater than 0, we can test for duplicate locations.
@@ -233,18 +240,15 @@ public class Dungeon {
             ) {
                 //if one vamp has the same location, it might be the same vampire we checked with.
                 //we increment
-                if (vampire.getX() == vamp.getX()) {
-                    if (vampire.getY() == vamp.getY()) {
+                if (vampire.getX() == vamp.getX() && (vampire.getY() == vamp.getY())) {
                         return false;
                     }
                 }
-
             }
             // else, each vampire was once an individual, full of life, before they became victim
             // to the undying thirst.
             return true;
         }
-    }
 
     public void theHordeRepresents() {
         for (Vampire vampir :
@@ -285,7 +289,9 @@ public class Dungeon {
             if(!vampir.isAlive()) {
                 toBeCulled.add(vampir);
             }
-        } vampireHorde.removeAll(toBeCulled);
+        }
+        //this one makes problems, so the hashcode makes problems
+        vampireHorde.removeAll(toBeCulled);
     }
 
     //every vampire's boolean for alive is set to false, if the coordinate of the vampire
