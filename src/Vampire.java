@@ -3,7 +3,7 @@ import java.util.HashMap;
 public class Vampire {
     private int x;
     private int y;
-    private char vampire = 'V';
+    private char vampire = 'v';
     private boolean alive;
 
     public Vampire() {

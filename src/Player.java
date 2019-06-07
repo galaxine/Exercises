@@ -58,9 +58,12 @@ public class Player {
         return alive;
     }
 
-    public void playerDies(int moves) {
-        if (moves == 0) {
-            this.alive = false;
+    public void playerDies(Lamp lamp) {
+        if (lamp.getTimer()>0) {
+            lamp.lampTimer();
+        }
+        if(lamp.getTimer()==0){
+            alive = false;
         }
     }
 

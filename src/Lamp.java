@@ -13,13 +13,13 @@ public class Lamp {
     }
 
     public boolean off(int timer) {
-        if (timer == 0) {
+        if (timer >0) {
             return false;
-        } return false;
+        } return true;
     }
 
-    public void lampTimer() {
-        this.timer--;
+    public int lampTimer() {
+        return timer--;
     }
 
     public int getTimer() {

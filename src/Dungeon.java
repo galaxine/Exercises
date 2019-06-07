@@ -9,7 +9,7 @@ import java.util.Scanner;
          5. test that the vampires do not collide with each other Done
          6. test that the vampires can be removed if the player collides with them. DONE
          7. test that turn based movement works. Vampires move one step for each player step.
-          after the player moves one turn.
+           take moves: one step player, one step vampire, check for dead vampires, until the move parameter is 0
          8. test that the lamp works.
          9. test that the terminal gui looks as intended.
          10. test that the conditions for losing or winning the game is valid.
@@ -49,18 +49,38 @@ public class Dungeon {
         //those are done ONCE
         buildDungeon();
         createVampireHorde();
+        status();
+        theHordeRepresents();
+        printDungeon();
+        //the dungeon updates here.
         while (true) {
+            //1. take commands
+            ArrayList<Character> commands = takeCommand(scanner.nextLine());
+            //2. execute Command, switch boolean for vampireMoves = true
+            //assign the move on this while loop afterwards, looping those instructions x times.
+            moves = commands.size();
+            while(moves>0) {
+                executeCommands(commands.get(0));
+                commands.remove(0);
+                thisKillsTheVampire();
+                removeVampires(vampireHorde);
+                buildDungeon();
+                theHordeRepresents();
+                randomVampireMovement();
+                thisKillsTheVampire();
+                removeVampires(vampireHorde);
+                buildDungeon();
+                theHordeRepresents();
+                moves--;
+            }
+            //the battery goes lower now by one
+            player.playerDies(lamp);
             status();
-            theHordeRepresents();
             printDungeon();
-            //take an order, execute it
-            executeCommands(takeCommand(scanner.nextLine()));
-            //see if the vampire was in his or her path
-            thisKillsTheVampire();
-            //see if they can be removed
-            removeVampires(vampireHorde);
-            randomVampireMovement();
-            buildDungeon();
+            if(!player.isAlive() || vampireHorde.size() == 0) {
+                winOrLose();
+                break;
+            }
         }
 
     }
@@ -98,15 +118,10 @@ public class Dungeon {
 
     /**
      *
-     * @param commands
+     * @param command
      */
-    public void executeCommands(ArrayList<Character> commands) {
-        if (!commands.isEmpty()) {
-            for (char command :
-                    commands) {
-                if (commands.size() == 0) {
-                    break;
-                }
+    //since there is now a loop for the run method, we can just as well take the ArrayList, then remove the
+    public void executeCommands(char command) {
                 switch (command) {
                         //player may not be in a lower position than zero
                     case 'a':
@@ -132,21 +147,10 @@ public class Dungeon {
                         }
                         break;
                 }
-                //the lamp timer lowers
-                lamp.lampTimer();
-                //the movement rises
-                moves++;
-            }
-        }
     }
-    //first test if the Vampire can take random Coordinates
-    //then test if it can move freely, randomly, inside the
-
-
+    //All vampires move once.
     public void randomVampireMovement() {
-        //while move is greater than 0
-        while (moves >0) {
-            //move each vampire once
+        if(vampireMove) {
             for (Vampire vamp : vampireHorde
             ) {
                 int x = new Random().nextInt(4);
@@ -187,9 +191,8 @@ public class Dungeon {
                         break;
                 }
             }
-            //reduce the move parameter by one
-            moves--;
         }
+
     }
 
 
@@ -270,9 +273,9 @@ public class Dungeon {
     }
     //method displays the current entitities' stats
     public void status() {
-        System.out.println(moves + "\n");
-        System.out.println();
+        System.out.println(lamp.getTimer() + "\n");
         System.out.println(player.toString());
+        System.out.println();
         for (Vampire vampir :
                 vampireHorde) {
             System.out.println(vampir.toString());
@@ -304,6 +307,13 @@ public class Dungeon {
             }
         }
     }
+
+    public void winOrLose() {
+        if (!player.isAlive() && vampireHorde.size() > 0) {
+            System.out.println("YOU LOSE");
+        }
+        if (vampireHorde.size() == 0) {
+            System.out.println("YOU WIN");
+        }
+    }
 }
-
-
