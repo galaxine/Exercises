@@ -7,7 +7,7 @@ public class FileManager {
 
     public List<String> read (String file) throws FileNotFoundException {
         File files = new File(file);
-        List<String> text = new ArrayList<>();
+        List<String> text = new ArrayList<String>();
         Scanner scanner = new Scanner(files);
         while(scanner.hasNextLine()) {
             String line = scanner.nextLine();
@@ -22,6 +22,11 @@ public class FileManager {
     }
 
     public void save (String file, List<String> texts) throws IOException {
-
+        FileWriter files = new FileWriter(file);
+        for (String text :
+                texts) {
+            files.write(text + "\n");
+        }
+        files.close();
     }
 }
