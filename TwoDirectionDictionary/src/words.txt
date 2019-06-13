@@ -1,3 +1,1 @@
-apina:monkey
-alla oleva:below
-olut:beer
+alla oleva:belowapina:monkeyolut:beer
