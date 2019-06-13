@@ -45,7 +45,7 @@ public class UserInterface implements Runnable{
 
         JLabel fun = new JLabel("Why?");
         JRadioButton noReason = new JRadioButton("No reason.");
-        JRadioButton cuz = new JRadioButton("Becuase it is fun!");
+        JRadioButton cuz = new JRadioButton("Because it is fun!");
         ButtonGroup group1 = new ButtonGroup();
         JButton click = new JButton("Done!");
         group1.add(noReason);
