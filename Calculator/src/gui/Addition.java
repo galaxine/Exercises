@@ -1,16 +1,19 @@
 package gui;
 
+import logic.Calculator;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Addition implements ActionListener {
+    private Calculator calc;
     private JTextField first;
     private JTextField second;
-
-    public Addition(JTextField first, JTextField second) {
-        this.first = new JTextField();
-        this.second = new JTextField();
+    public Addition(JTextField first, JTextField second, Calculator calc) {
+        this.first = first;
+        this.second = second;
+        this.calc = calc;
     }
     /**
      * Invoked when an action occurs.
@@ -19,6 +22,15 @@ public class Addition implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        first.setText(this.second.getText());
+        calc.incrementByN(Integer.parseInt(second.getText()));
+        first.setText(String.valueOf(calc.getSum()));
+    }
+
+    public boolean isZero (Calculator calc) {
+        if (calc.getSum() != 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
