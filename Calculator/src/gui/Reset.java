@@ -7,16 +7,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Reset implements ActionListener {
-    JTextField first;
-    JTextField second;
-    JButton button;
-    Calculator calc;
-
-    public Reset(JTextField first, JTextField second, JButton button, Calculator calc) {
+    private JTextField first;
+    private JTextField second;
+    private Calculator calc;
+    private PanelMenu menu;
+    public Reset(JTextField first, JTextField second, Calculator calc, PanelMenu menu) {
         this.first = first;
         this.second = second;
         this.calc = calc;
-        this.button = button;
+        this.menu = menu;
     }
 
     public Reset(JTextField first, JTextField second, Calculator calculator) {
@@ -32,14 +31,11 @@ public class Reset implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        this.calc.resetSum();
+        this.first.setText(String.valueOf(this.calc.getSum()));
+        this.second.setText("");
+        this.first.setText("0");
+        this.menu.getReset().setEnabled(false);
     }
 
-    public boolean isZero (Calculator calc) {
-        if (calc.getSum() != 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }

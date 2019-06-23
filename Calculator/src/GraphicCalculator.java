@@ -29,13 +29,12 @@ public class GraphicCalculator implements Runnable {
         first.setEnabled(false);
         JTextField second = new JTextField();
         PanelMenu menu = new PanelMenu(calculator);
-        Addition add = new Addition(first, second, calculator);
+        Addition add = new Addition(first, second, calculator, menu);
         menu.getPlus().addActionListener(add);
-        Subtraction subtraction = new Subtraction(first, second, calculator);
+        Subtraction subtraction = new Subtraction(first, second, calculator, menu);
         menu.getMinus().addActionListener(subtraction);
-        EventHandler event = new EventHandler(menu,"menu.getReset()","menu.setReset()","add");
-        Reset reset = new Reset(first,second,calculator);
-        menu.getReset().;
+        Reset reset = new Reset(first,second,calculator,menu);
+        menu.getReset().addActionListener(reset);
 
         container.add(first);
         container.add(second);

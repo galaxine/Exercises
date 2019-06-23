@@ -10,11 +10,12 @@ public class Subtraction implements ActionListener {
     private Calculator calc;
     private JTextField first;
     private JTextField second;
-
-    public Subtraction(JTextField first, JTextField second, Calculator calc) {
+    private PanelMenu menu;
+    public Subtraction(JTextField first, JTextField second, Calculator calc, PanelMenu menu) {
         this.first = first;
         this.second = second;
         this.calc = calc;
+        this.menu = menu;
     }
     /**
      * Invoked when an action occurs.
@@ -24,15 +25,18 @@ public class Subtraction implements ActionListener {
     **/
     @Override
     public void actionPerformed(ActionEvent e) {
-        calc.decrementByN(Integer.parseInt(second.getText()));
-        first.setText(String.valueOf(calc.getSum()));
-    }
-
-    public boolean isZero (Calculator calc) {
-        if (calc.getSum() != 0) {
-            return true;
-        } else {
-            return false;
+        try {
+            calc.decrementByN(Integer.parseInt(second.getText()));
+            first.setText(String.valueOf(calc.getSum()));
+            second.setText("");
+            if (calc.getSum() != 0) {
+                menu.getReset().setEnabled(true);
+            } else {
+                menu.getReset().setEnabled(false);
+            }
+        }  catch (NumberFormatException m) {
+            second.setText("");
         }
+
     }
 }
